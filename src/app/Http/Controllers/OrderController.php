@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Order;
+use App\Services\OrderService;
 
 class OrderController extends Controller
 {
+    protected $service;
+
+    public function __construct()
+    {
+        $this->service = new OrderService();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +21,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return response()->json(Order::with('orderItems.products')->get());
+        return response()->json($this->service->getAllOrders());
     }
 
     /**
@@ -35,7 +42,17 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        
+        $response  = $this->service->createOrder(
+            $request->get('customerId') ?? false,
+            $request->get('cart') ?? [],
+        );
+
+        if(empty($response['error']) === false){
+            return response()->json($response, 400);
+        }
+
+        return response()->json($response);
+
     }
 
     /**
@@ -46,7 +63,13 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        return response()->json(Order::find($id));
+        $response = $this->service->getOrder($id);
+
+        if(empty($response['error']) === false){
+            return response()->json($response, 400);
+        }
+
+        return response()->json($response);
     }
 
     /**

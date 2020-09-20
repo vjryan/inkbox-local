@@ -21,7 +21,7 @@ class CreateOrdersTable extends Migration
             $table->string('fulfillment_status', 25)->nullable();
             $table->timestamp('fulfilled_date', 0);
             $table->enum('order_status', ['pending','active','done','cancelled','resend'])->nullable(false)->default(null);
-            $table->integer('customer_order_count');
+            $table->integer('customer_order_count')->nullable(true);
             $table->timestamps();
         });
     }

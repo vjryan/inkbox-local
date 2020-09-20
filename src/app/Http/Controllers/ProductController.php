@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Product;
+use App\Services\ProductService;
 
 class ProductController extends Controller
 {
+
+    protected $service;
+
+    public function __construct()
+    {
+        $this->service = new ProductService();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,8 +21,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        // var_dump(Product::get());
-        return response()->json(Product::all());
+        return response()->json($this->service->getProductList());
     }
 
     /**
@@ -36,7 +42,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
@@ -47,7 +53,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        return response()->json(Product::find($id));
+        return response()->json($this->service->getProduct($id));
     }
 
     /**
