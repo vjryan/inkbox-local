@@ -24,7 +24,7 @@ export default {
     },
     methods: {
         fetch(){
-             axios.get('http://localhost:8080/api/products')
+             axios.get('/api/products')
             .then((response) => {
                 this.products = response.data;
                 console.log(response.data);

@@ -89,21 +89,25 @@
                 }
             },
             placeOrder(){
-                console.log(this.shoppingcart);
+                // console.log(this.shoppingcart);
                 var payload = {
                     customerId: 1,
                     cart:[]
                 };
 
                 for(let i = 0; i < this.shoppingcart.length; i++){
-                    if(this.shoppingcart.quantity > 0){
+                    if(this.shoppingcart[i].quantity > 0){
                         payload.cart.push({
-                            productId: this.shoppingcart.id,
-                            quantity: this.shoppingcart.quantity
+                            productId: this.shoppingcart[i].id,
+                            quantity: this.shoppingcart[i].quantity
                         })
                     }
                 }
 
+                if(payload.cart.length === 0){
+                    alert('shopping cart items not added');
+                    return;
+                }
 
                 axios.post('/api/orders', payload)
                     .then( (response) => {
@@ -111,6 +115,10 @@
 
                         if(response.status === 200){
                             this.$router.push('orders')
+                        }
+
+                        if(response.status === 400){
+                            alert(response.data.error);
                         }
                     })
                     .catch((error) => {

@@ -47,3 +47,42 @@
 .cart-container .cart-items span{
     vertical-align: super;
 }
+
+.orders-table{
+    
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto;
+    padding: 10px;
+}
+
+.orders-table .header {
+    font-weight: bold;
+}
+
+.row{
+    border: 1px solid black;
+}
+
+.col{
+    padding: 0.25rem;
+    border: 1px solid black;
+    padding: 0.25rem;
+}
+
+// sheets
+
+.sheet-canvas {
+    margin: 2rem;
+    background: #eee;
+  }
+  
+.sheet-container{
+    display: flex;
+}
+  
+.sheet-container canvas {
+    background: white;
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+    border: 1px solid black;
+  }

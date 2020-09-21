@@ -5,9 +5,10 @@ require('./bootstrap');
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-import Products from './components/Products.vue';
+// import Products from './components/Products.vue';
 import Shop from './components/Shop.vue';
 import Orders from './components/Orders.vue';
+import Sheets from './components/Sheets.vue';
 import App from './layout/App.vue';
 
 Vue.use(VueRouter);
@@ -31,6 +32,7 @@ Vue.use(VueRouter);
 const routes = [
   { path: '/shop',   component: Shop },
   { path: '/orders', component: Orders },
+  { path: '/sheets', component: Sheets },
 ];
 
 // 3. Create the router instance and pass the `routes` option

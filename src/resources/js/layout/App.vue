@@ -4,7 +4,7 @@
             <nav>
                 <router-link to="/shop">Shop</router-link>
                 <router-link to="/orders">Orders</router-link>
-                <router-link to="/process">Process Orders</router-link>
+                <router-link to="/sheets"> Sheets</router-link>
             </nav>
             <router-view></router-view>
         </div>

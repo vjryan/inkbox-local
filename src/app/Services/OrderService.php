@@ -16,7 +16,7 @@ class OrderService{
     {
         $this->productService = new ProductService();
     }
-    
+
     public function getOrder($id)
     {
         return Order::with('orderItems.products')->find($id) ?? false;
@@ -24,20 +24,20 @@ class OrderService{
 
     public function getAllOrders()
     {
-        return Order::with('orderItems.products')->get() ?? false;
+        return Order::with('orderItems.products')->orderBy('updated_at', 'desc')->get() ?? false;
     }
 
     public function createOrder($customerId, $cart)
     {
         // get details of items and validates cart
         list($error, $orderTotal, $orderItems) = $this->parseOrder($cart);
-        
+
         if($error !== false){
             return [
                 'error' => $error
             ];
         }
-       
+
         // create order object
         $order = new Order([
             'order_number' => $this->generateOrderId(),
@@ -46,7 +46,7 @@ class OrderService{
             'fulfillment_status' => 'Order Created',
             'order_status'       => 'Pending',
         ]);
-        
+
         try{
             $result = $order->save();
         }catch(Exception $e){
@@ -64,18 +64,85 @@ class OrderService{
         ];
     }
 
+
+    /**
+    * Process pending orders to be printed.
+    */
+    public function process()
+    {
+        $items          = $this->getPendingOrdersForProcessing();
+
+        if(count($items) === 0){
+            return [
+                'No orders to process'
+            ];
+        }
+        $printService   = new PrintService();
+
+        $mappedSheets = $printService->map($items);
+
+        // update order status
+        foreach($items as $orderId => $prints){
+            $this->setOrderStatus($orderId, 'active');
+        }
+
+        foreach($mappedSheets as $sheet){
+            $result[] = $printService->savePrintSheet($sheet);
+        }
+
+        return $result;
+    }
+
+    protected function setOrderStatus($orderId, $status)
+    {
+        $order = Order::find($orderId);
+        if($order === false){
+            return false;
+        }
+
+        $order->order_status = $status;
+        return $order->save();
+    }
+
+    /**
+    * Grabs all pending orders to process them for printing
+    */
+    protected function getPendingOrdersForProcessing()
+    {
+        $orders = Order::with('orderItems.products')->where('order_status', 'pending')->get()->toArray();
+        $items  = [];
+
+        foreach($orders as $order){
+            foreach($order['order_items'] as $orderItem){
+                $dimensions = explode('x', $orderItem['products']['size']);
+                $area       = $dimensions[0] * $dimensions[1];
+                $items[$order['order_id']][] = (object) [
+                    'order_id'          => $order['order_id'],
+                    'product_id'        => $orderItem['products']['product_id'],
+                    'design_url'        => $orderItem['products']['design_url'],
+                    'order_item_id'     => $orderItem['order_item_id'],
+                    'w'                 => (int) $dimensions[0],
+                    'h'                 => (int) $dimensions[1],
+                    'area'              => (int) $area
+                ];
+            }
+        }
+
+        return $items;
+    }
+
     /**
      * Checks to see if an order being created can fit onto a single sheet or not.
-     * will return false if it cant, otherwise it will return the individual items 
+     * will return false if it cant, otherwise it will return the individual items
      * required for printing
-     * 
+     *
      * @param array $products
-     * 
+     *
      * @return mixed
      */
     protected function canOrderItemsFit(array $products)
     {
-        
+
         $orderItems = [];
         // Going to flatten for later usage;
         foreach($products as $product){
@@ -124,9 +191,9 @@ class OrderService{
             $product = $this->productService->getProduct( (int) $item['productId']);
 
             if($product === false){
-                return [                    
+                return [
                     "One of the items in your cart (product: {$item['productId']}) is not available at this time.",
-                    $orderTotal, 
+                    $orderTotal,
                     $orderItems
                 ];
             }
@@ -134,7 +201,7 @@ class OrderService{
             if($product->inventory_quantity === 0){
                 return [
                     "{$product->title} is no longer in stock.",
-                    $orderTotal, 
+                    $orderTotal,
                     $orderItems
                 ];
             }
@@ -142,7 +209,7 @@ class OrderService{
             if($product->inventory_quantity < $item['quantity']){
                 return [
                     "Not enough inventory of {$product->title} to fill order, pick lower quantity.",
-                    $orderTotal, 
+                    $orderTotal,
                     $orderItems
                 ];
             }
@@ -151,7 +218,7 @@ class OrderService{
                 'quantity' => $item['quantity'],
                 'product' => $product
             ];
-            
+
             $orderTotal += $product->price * $item['quantity'];
         }
 
@@ -162,13 +229,13 @@ class OrderService{
         if($orderItems === false){
             return [
                 "Too many items in cart, unable to process order.",
-                $orderTotal, 
+                $orderTotal,
                 $orderItems
             ];
         }
 
         return [
-            false, 
+            false,
             $orderTotal,
             $orderItems
         ];
@@ -183,8 +250,8 @@ class OrderService{
     }
 
     /**
-     * Generates a unique order number for tracking purposes 
-     * 
+     * Generates a unique order number for tracking purposes
+     *
      * @return integer
      */
     protected function generateOrderId()
