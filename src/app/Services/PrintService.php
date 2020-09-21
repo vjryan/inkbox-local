@@ -42,7 +42,6 @@ class PrintService
     {
         $sheet = new PrintMapper();
         foreach($orderItems as $orderId => $items){
-
             $spaceAvailable = $sheet->canFit($items);
             if($spaceAvailable === false){
                 // save this sheet
@@ -85,7 +84,7 @@ class PrintService
            $printSheetItem->save();
         }catch(\Exception $e){
             var_dump($e->getMessage());
-           return $item;
+            return $item;
         }
            
        }

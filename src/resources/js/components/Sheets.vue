@@ -9,13 +9,13 @@
                      :key="sheet._id"
                      @click="drawSheet(sheet)"
                 >
-                {{ sheet.sheet_url }}
+               {{ sheet.sheet_url }}
                 </li>
             </ul>
         </div>
 
         <div class="sheet-canvas">
-            <canvas id="canvas" width="1500" height="1000"></canvas>
+            <canvas id="canvas" width="1125" height="1000"></canvas>
         </div>
     </div>
 </template>
@@ -95,7 +95,11 @@ export default {
             .then((response) => {
                 this.sheets = response.data;
                 console.log(response.data);
-            });
+            })
+            .catch((error) => {
+                    alert(error.response.data.error);
+                    console.log(error.response, 'error');
+                });
         }
     }
 }

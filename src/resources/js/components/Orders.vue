@@ -62,6 +62,10 @@ export default {
             .then((response) => {
                 this.orders = response.data;
                 console.log(response.data);
+            })
+            .catch((error) => {
+                alert(error.response.data.error);
+                console.log(error.response, 'error');
             });
         }
     }

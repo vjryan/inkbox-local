@@ -67,6 +67,25 @@
   padding: 0.25rem;
 }
 
+canvas {
+  height: 1000px;
+  width: 1500px;
+}
+
+.sheet-list ul {
+  padding-right: 1rem;
+  border-right: 1px solid;
+}
+
+.sheet-list ul li {
+  font-weight: 500;
+}
+
+.sheet-list ul li:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .sheet-canvas {
   margin: 2rem;
   background: #eee;

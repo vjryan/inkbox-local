@@ -116,13 +116,10 @@
                         if(response.status === 200){
                             this.$router.push('orders')
                         }
-
-                        if(response.status === 400){
-                            alert(response.data.error);
-                        }
                     })
                     .catch((error) => {
-                        console.log(error, error);
+                        alert(error.response.data.error);
+                        console.log(error, 'error');
                     });
                 
             },
@@ -142,6 +139,10 @@
                         })
                     });
                     console.log(response.data);
+                })
+                .catch((error) => {
+                    alert(error.response.data.error);
+                    console.log(error.response, 'error');
                 });
             }
         }

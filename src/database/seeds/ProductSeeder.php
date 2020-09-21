@@ -24,7 +24,7 @@ class ProductSeeder extends Seeder
                 'size'  => $size,
                 'price' => rand(10, 20) + 0.99,
                 'design_url' => 'https://webstockreview.net/images/clipart-gallery-icon-1.png',
-                'inventory_quantity' => rand(10, 20),
+                'inventory_quantity' => rand(100, 1000),
             ]);
             $product->save();
         }

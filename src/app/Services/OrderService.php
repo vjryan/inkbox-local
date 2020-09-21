@@ -80,7 +80,7 @@ class OrderService{
         $printService   = new PrintService();
 
         $mappedSheets = $printService->map($items);
-
+        
         // update order status
         foreach($items as $orderId => $prints){
             $this->setOrderStatus($orderId, 'active');
@@ -187,6 +187,13 @@ class OrderService{
         $orderTotal     = 0;
         $orderItems     = false;
 
+        if(count($cart) === 0){
+            return [
+                "No Items in cart",
+                $orderTotal,
+                $orderItems
+            ]; 
+        }
         foreach($cart as $item){
             $product = $this->productService->getProduct( (int) $item['productId']);
 
@@ -256,6 +263,6 @@ class OrderService{
      */
     protected function generateOrderId()
     {
-        return time(); // in reality we'd wanna use uniqid() or something like that.
+        return rand(100, 10000); // in reality we'd wanna use uniqid() or something like that.
     }
 }
