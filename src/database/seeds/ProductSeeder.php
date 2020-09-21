@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Product;
+use App\Models\Product;
 use Faker\Generator as Faker;
 
 class ProductSeeder extends Seeder
@@ -22,7 +22,8 @@ class ProductSeeder extends Seeder
                 'title' => 'Product '.($key+1),
                 'type'  => 'tattoo',
                 'size'  => $size,
-                'price' => rand(10, 20),
+                'price' => rand(10, 20) + 0.99,
+                'design_url' => 'https://webstockreview.net/images/clipart-gallery-icon-1.png',
                 'inventory_quantity' => rand(10, 20),
             ]);
             $product->save();

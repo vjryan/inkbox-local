@@ -15,7 +15,7 @@
         </div>
 
         <div class="sheet-canvas">
-            <canvas id="canvas" width="1000" height="1500"></canvas>
+            <canvas id="canvas" width="1500" height="1000"></canvas>
         </div>
     </div>
 </template>
@@ -40,9 +40,9 @@ export default {
 
             
             var printItems = sheet.print_sheet_items;
-            var scaleX     = 50;
-            var scaleY     = 50;
-
+            var scaleX     = 75;
+            var scaleY     = 75;
+            var newline    = 0.125;
 
             // reset Canvas
             canvas.width = canvas.width;
@@ -59,23 +59,34 @@ export default {
                 ctx.strokeStyle  = "#"+((1<<24)*Math.random()|0).toString(16);
 
 
-                // image 
-                // var img = new Image;
-                // img.src = printItems[i].order_items.products.design_url;
-
-                // ctx.drawImage(
-                //     img,
-                //     printItems[i].x_pos,
-                //     printItems[i].y_pos,
-                //     printItems[i].width,
-                //     printItems[i].height
-                // );
-
                 ctx.strokeRect(
                     printItems[i].x_pos,
                     printItems[i].y_pos,
                     printItems[i].width,
                     printItems[i].height,
+                );
+
+                ctx.restore();
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = "center";
+                ctx.fillStyle = "black";
+                ctx.font = "0.00925em sans-serif";
+                ctx.fillText(
+                    printItems[i].size, 
+                    printItems[i].x_pos + (printItems[i].width / 2), 
+                    printItems[i].y_pos + (printItems[i].height / 2)
+                );
+
+                ctx.fillText(
+                    printItems[i].order_items.products.title, 
+                    printItems[i].x_pos + (printItems[i].width / 2), 
+                    (printItems[i].y_pos + newline) + (printItems[i].height / 2)
+                );
+
+                ctx.fillText(
+                    printItems[i].order_items.orders.order_number, 
+                    printItems[i].x_pos + (printItems[i].width / 2), 
+                    (printItems[i].y_pos + (newline * 2)) + (printItems[i].height / 2)
                 );
             }
         },

@@ -2,9 +2,9 @@
 
 use Illuminate\Database\Seeder;
 
-use App\Product;
-use App\Order;
-use App\OrderItem;
+use App\Models\Product;
+use App\Models\Order;
+use App\Models\OrderItem;
 
 class OrderItemSeeder extends Seeder
 {

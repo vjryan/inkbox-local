@@ -11,7 +11,10 @@ class SheetController extends Controller
     public function index()
     {
         return response()->json(
-            PrintSheet::with('printSheetItems.orderItems.products')->get()
+            PrintSheet::with([
+                'printSheetItems.orderItems.products',
+                'printSheetItems.orderItems.orders'
+            ])->get()
         );
     }
     
